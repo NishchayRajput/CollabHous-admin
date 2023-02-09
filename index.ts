@@ -4,7 +4,7 @@ import AdminJSExpress from '@adminjs/express'
 import { Database, Resource } from '@adminjs/mongoose'
 import mongoose from 'mongoose'
 import * as dotenv from 'dotenv'
-
+import { PersonModel } from './model'
 dotenv.config()
 
 const PORT = 3001
@@ -24,6 +24,9 @@ const start = async (): Promise<void> => {
   // We will need to create an instance of AdminJS with a basic resource
   const admin = new AdminJS({
     resources: [
+      {
+        resource: PersonModel
+      }
     ]
   })
 

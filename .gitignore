@@ -3,4 +3,3 @@ node_modules
 .eslintrc.json
 yarn.lock
 .env
-model.ts
