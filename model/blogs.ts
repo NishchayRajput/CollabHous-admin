@@ -9,8 +9,16 @@ interface Blog extends Document {
     tags?: string;
     like: number;
     time: Date;
-    read_time?: number;
+    read_time?: number;    
+    items: {        
+            s3Key: string;
+            bucket: string;
+            mime: string;
+            dateCreated: Date;    
+            region: string;              
+      }[];
 }
+
 
 const blogsSchema = new Schema<Blog>({
     user_id: {
@@ -40,6 +48,19 @@ const blogsSchema = new Schema<Blog>({
     read_time: {
         type: Number,
     },
+    items: [
+        new Schema(
+          {
+                  s3Key: { type: 'String', required: true },
+                  bucket: { type: 'String' },
+                  mime: { type: 'String' },
+                  region: { type: 'String' },
+                  dateCreated: { type: 'Date', default: Date.now },                
+
+          },
+          { _id: false },
+        ),
+      ],
 });
 
 // Create and export the 'blogs' model based on the schema

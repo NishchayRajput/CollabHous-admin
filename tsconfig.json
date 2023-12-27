@@ -23,8 +23,11 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "moduleResolution": "node",
-    "isolatedModules": true
-  },
+    "isolatedModules": true,
+    // "types": [
+      // "node","./upload-types.d.ts",
+    // ],
+  },  
   "exclude": [
     "node_modules"
   ],
