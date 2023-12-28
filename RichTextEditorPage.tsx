@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { HtmlEditor, Link, Image, Inject, RichTextEditorComponent, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
+
 // import { Editor } from 'react-draft-wysiwyg';
 import { Editor } from '@tinymce/tinymce-react';
 // import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -71,13 +73,31 @@ const RichTextEditorPage: React.FC<BasePropertyProps> = (props) => {
                    bullist numlist outdent indent | removeformat | help | 
                    image`, // Add the 'image' button to the toolbar
         image_advtab: true,
-        images_upload_url: '/upload-image-endpoint', // Replace with your server endpoint
-        image_edit_button: 'ImageEdit',
-        // images_upload_handler: function (blobInfo, success, failure) {
-        //   // Handle image upload to your server here
-        //   // Call success with the image URL after successful upload
-        //   // Call failure if there's an error
-        // },
+        file_picker_types: 'image', // Allow image uploads
+        file_picker_callback: function(callback, value, meta) {
+          // Open a file picker dialog
+          const input = document.createElement('input');
+          input.setAttribute('type', 'file');
+          input.setAttribute('accept', 'image/*');
+
+          // Handle file selection
+          input.onchange = function() {
+            const file = (input.files as FileList)[0];
+            const reader = new FileReader();
+
+            // Read the file as a data URL
+            reader.onload = function() {
+              const dataUrl = reader.result as string;
+
+              // Pass the selected image URL to the editor
+              callback(dataUrl, { alt: file.name });
+            };
+
+            reader.readAsDataURL(file);
+          };
+
+          input.click();
+        },
       }}
       // onEditorChange={handleEditorChange}
     />

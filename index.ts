@@ -76,6 +76,7 @@ const start = async (): Promise<void> => {
     upload: componentLoader.add("FormPage", "./editImage"),
     show: componentLoader.add("Show", "./showImage"),
     richTextContent : componentLoader.add("RichTextEditorPage", "./RichTextEditorPage"),
+    richShowContent : componentLoader.add("richShowContent", "./RichTextShowEditor"),
   };
 
 
@@ -155,9 +156,9 @@ const start = async (): Promise<void> => {
       const richTextContent = request.payload['richTextContent'];
       if (richTextContent) {
         // Handle rich text content upload to AWS S3 here
-  
+        const title = request.payload['title'];
         // For example:
-        const richTextKey = `richtext/${Date.now()}_rich_text.txt`;
+        const richTextKey = `richtext/${title}_rich_text.txt`;
         const richTextParams = {
           Bucket: process.env.REACT_APP_AWS_BUCKET,
           Key: richTextKey,
@@ -169,7 +170,8 @@ const start = async (): Promise<void> => {
         console.log(`Successfully uploaded rich text content to ${richTextRes}`);
   
         // Update the payload with the rich text content information
-        request.payload['richTextContent'] = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.amazonaws.com/${richTextKey}`;
+        const url = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.amazonaws.com/${richTextKey}`;
+        request.payload['richTextContent'] = url;
 
       }
     } catch (error) {
@@ -224,7 +226,7 @@ const start = async (): Promise<void> => {
           listProperties: [
             "title",
             "user_id",
-            "content",
+            
             "tags",
             'richTextContent',
             "time",
@@ -243,6 +245,7 @@ const start = async (): Promise<void> => {
               type: 'richtext',
               components: {
                 edit: Components.richTextContent,
+                show: Components.richShowContent,
               }
             },
             // components: {
