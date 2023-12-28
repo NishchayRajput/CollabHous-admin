@@ -33,15 +33,6 @@ const blogsSchema = new Schema<Blog>({
         type: String,
         required: true,
     },
-    // richTextContent: {
-    //     type: {
-    //         s3Key: { type: String },
-    //         bucket: { type: String },
-    //         dateCreated: { type: Date },
-    //         region: { type: String },
-    //     },
-    //     default: null, // adjust the default value as needed
-    // },
     richTextContent: {
         type: String,
         required: true,
