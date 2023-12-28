@@ -14,29 +14,19 @@ const ShowAction: React.FC<BasePropertyProps> = (props) => {
 
   const [fetchedContent, setFetchedContent] = React.useState('');
 
-  React.useEffect(() => {
-    // Fetch content from the S3 URL
-    axios.get(s3Url)
-  .then(response => {
-    // Access the content in the 'data' property of the response
-    const fileContent = response.data;
-    console.log('File Content:', fileContent);
-  })
-  .catch(error => {
-    console.error('Error fetching file content:', error.message);
-  });
-    // const fetchData = async () => {
-    //   if(s3Url){try {
-    //     const response = await fetch(s3Url);
-    //     const textData = await response.text();
-    //     console.log(response);
-    //     setFetchedContent(textData);
-    //   } catch (error) {
-    //     console.error('Error fetching content:', error);
-    //   }}
-    // };
+  React.useEffect(() => {    
+    const fetchData = async () => {
+      if(s3Url){try {
+        const response = await fetch(s3Url);
+        const textData = await response.text();
+        console.log(textData);
+        setFetchedContent(textData);
+      } catch (error) {
+        console.error('Error fetching content:', error);
+      }}
+    };
 
-    // fetchData();
+    fetchData();
   }, []);
 
   return (

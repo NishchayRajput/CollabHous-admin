@@ -10,52 +10,16 @@ import { Editor } from '@tinymce/tinymce-react';
 // import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 const RichTextEditorPage: React.FC<BasePropertyProps> = (props) => {
-  // const { onChange, value } = props;
-
-  // const handleChange = (content: string) => {
-  //   onChange(content);
-  // };
   const [richTextContent, setRichTextContent] = useState('');
 
-  //   const handleSave = () => {
-  //     onSave(richTextContent);
-  //     // You can add additional logic here, such as saving to the server
-  //   };
+  const handleEditorChange = (content, editor) => {
+    setRichTextContent(content);
+    console.log(content);
+    props.onChange(content);
+    props.onChange('richTextContent', content);
+    // You can perform additional actions with the content if needed
+  };
   return (
-    // <ReactQuill
-    //     value={richTextContent}
-    //     onChange={(value) => setRichTextContent(value)}
-    //     modules={{
-    //       // Configure modules as needed, including image editing options
-    //       toolbar: [
-    //         [{ header: [1, 2, false] }],
-    //         ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-    //         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-    //         ['link', 'image'],
-    //         ['clean'],
-    //       ],
-    //     }}
-    //     formats={[
-    //       'header',
-    //       'bold', 'italic', 'underline', 'strike', 'blockquote',
-    //       'list', 'bullet',
-    //       'link', 'image',
-    //     ]}
-    //   />
-    //   <div>
-    //   <h2>CKEditor 5 React App</h2>
-    //   <CKEditor
-    //     editor={ ClassicEditor }
-    //     data="<p>Hello from CKEditor 5!</p>"
-    //     onReady={ ( editor ) => {
-    //       console.log( "CKEditor5 React Component is ready to use!", editor );
-    //     } }
-    //     onChange={ ( event, editor ) => {
-    //       const data = editor.getData();
-    //       console.log( { event, editor, data } );
-    //     } }
-    //   />
-    // </div>
     <div>
     <Editor
       apiKey="your-api-key"
@@ -99,7 +63,7 @@ const RichTextEditorPage: React.FC<BasePropertyProps> = (props) => {
           input.click();
         },
       }}
-      // onEditorChange={handleEditorChange}
+      onEditorChange={handleEditorChange}
     />
   </div>
     // <Editor

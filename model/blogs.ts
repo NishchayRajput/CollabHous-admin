@@ -5,12 +5,6 @@ interface Blog extends Document {
     user_id: Types.ObjectId;
     title: string;
     content: string;
-    // richTextContent: {
-    //     s3Key: string;
-    //     bucket: string;
-    //     dateCreated: Date;
-    //     region: string;
-    //   } | null;
     richTextContent: string | null;
     tags?: string;
     like: number;
