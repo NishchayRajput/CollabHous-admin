@@ -17,6 +17,7 @@ import AdminInfo from "./model/admin";
 import { ActionRequest, ActionContext } from "adminjs";
 import AWS from "aws-sdk";
 import RichTextEditorPage from "./RichTextEditorPage"
+import { uuid } from 'uuidv4';
 // import { DefaultQuillToolbarOptions } from '@adminjs/design-system';
  // Adjust the path based on your project structure
 import Connect from "connect-mongo";
@@ -159,7 +160,8 @@ const start = async (): Promise<void> => {
         // Handle rich text content upload to AWS S3 here
   
         // For example:
-        const richTextKey = `richtext/${Date.now()}_rich_text.txt`;
+        const uniqueId = uuid();
+        const richTextKey = `richtext/${uniqueId}_rich_text.txt`;
         const richTextParams = {
           Bucket: process.env.REACT_APP_AWS_BUCKET,
           Key: richTextKey,

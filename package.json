@@ -25,7 +25,9 @@
     "moment-timezone": "^0.5.43",
     "mongoose": "^6.9.1",
     "react-draft-wysiwyg": "^1.15.0",
-    "react-quill": "^2.0.0"
+    "react-quill": "^2.0.0",
+    "uuid": "^9.0.1",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
