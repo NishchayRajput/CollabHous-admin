@@ -3,6 +3,9 @@
     "@adminjs/express": "^5.1.0",
     "@adminjs/mongoose": "^3.0.1",
     "@adminjs/upload": "^4.0.1",
+    "@ckeditor/ckeditor5-build-classic": "^40.2.0",
+    "@ckeditor/ckeditor5-react": "^6.2.0",
+    "@tinymce/tinymce-react": "^4.3.2",
     "@tiptap/core": "^2.0.0",
     "@tiptap/pm": "^2.1.12",
     "@types/node": "*",
@@ -19,6 +22,7 @@
     "formidable": "^3.5.1",
     "moment-timezone": "^0.5.43",
     "mongoose": "^6.9.1",
+    "react-draft-wysiwyg": "^1.15.0",
     "react-quill": "^2.0.0"
   },
   "devDependencies": {

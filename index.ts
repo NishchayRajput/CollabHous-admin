@@ -16,6 +16,7 @@ import InteractionModel from "./model/Interaction";
 import AdminInfo from "./model/admin";
 import { ActionRequest, ActionContext } from "adminjs";
 import AWS from "aws-sdk";
+import RichTextEditorPage from "./RichTextEditorPage"
 // import { DefaultQuillToolbarOptions } from '@adminjs/design-system';
  // Adjust the path based on your project structure
 import Connect from "connect-mongo";
@@ -74,8 +75,9 @@ const start = async (): Promise<void> => {
   const Components = {
     upload: componentLoader.add("FormPage", "./editImage"),
     show: componentLoader.add("Show", "./showImage"),
-    // richTextEditor: componentLoader.add("RichTextEditor", "./RichTextEditorPage"), // Add the new component
+    richTextContent : componentLoader.add("RichTextEditorPage", "./RichTextEditorPage"),
   };
+
 
   const convertKeysToArray = (payload) => {
     const filesArray = [];
@@ -239,7 +241,18 @@ const start = async (): Promise<void> => {
             },
             richTextContent: {
               type: 'richtext',
+              components: {
+                edit: Components.richTextContent,
+              }
             },
+            // components: {
+            //   edit: RichTextEditorPage,
+            // },
+            // // Add more options for the rich text editor
+            // options: {
+            //   placeholder: 'Type your content here...',
+            //   // Add more options as needed
+            // },
           },
           actions: {
             new: {
