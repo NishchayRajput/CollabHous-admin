@@ -26,12 +26,9 @@
     "mongoose": "^6.9.1",
     "react-draft-wysiwyg": "^1.15.0",
     "react-quill": "^2.0.0",
-<<<<<<< HEAD
     "uuid": "^9.0.1",
-    "uuidv4": "^6.2.13"
-=======
+    "uuidv4": "^6.2.13",
     "styled-component": "^2.8.0"
->>>>>>> 9d4aa8f027bd734e6ccb3344185e52df54425d8e
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
