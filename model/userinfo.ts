@@ -7,6 +7,13 @@ interface UserInfo extends Document {
   password?: string; // For normal signups
   address: string;
   isGoogleSignup: boolean; // Flag to indicate Google signup
+  items: {
+    s3Key: string;
+    bucket: string;
+    mime: string;
+    dateCreated: Date;
+    region: string;
+}[];
 }
 
 const userInfoSchema = new Schema<UserInfo>({
@@ -16,6 +23,18 @@ const userInfoSchema = new Schema<UserInfo>({
   password: { type: String },
   address: { type: String, default: 'null' },
   isGoogleSignup: { type: Boolean, default: false },
+  items: [
+    new Schema(
+        {
+            s3Key: { type: "String", required: true },
+            bucket: { type: "String" },
+            mime: { type: "String" },
+            region: { type: "String" },
+            dateCreated: { type: "Date", default: Date.now },
+        },
+        { _id: false }
+    ),
+],
 });
 
 const UserInfoModel = mongoose.model<UserInfo>('userInfo', userInfoSchema);

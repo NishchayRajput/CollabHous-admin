@@ -202,21 +202,15 @@ const start = async (): Promise<void> => {
         options: {
           navigation: usersNavigation,
           listProperties: ["name", "email", "isGoogleSignup", "g_id"],
-          // properties: {
-          //   password: {
-          //     isVisible: false,
-          //   },
-          //   password: {
-          //     type: "string",
-          //     isVisible: {
-          //       // Make password visible in the edit mode.
-          //       list: false,
-          //       edit: true,
-          //       filter: false,
-          //       show: false,
-          //     },
-          //   },
-          // },
+          properties: {
+            items: {
+              type: "image/png",
+              components: {
+                // edit: Components.upload,
+                show: Components.show,
+              },
+            },
+          },
         },
       },
       {
@@ -226,8 +220,7 @@ const start = async (): Promise<void> => {
           listProperties: [
             "title",
             "user_id",
-            "tags",
-            "content",
+            "tags",            
             'richTextContent',
             "time",
             "read_time",
