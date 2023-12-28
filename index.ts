@@ -18,7 +18,7 @@ import { ActionRequest, ActionContext } from "adminjs";
 import AWS from "aws-sdk";
 import RichTextEditorPage from "./RichTextEditorPage"
 // import { DefaultQuillToolbarOptions } from '@adminjs/design-system';
- // Adjust the path based on your project structure
+// Adjust the path based on your project structure
 import Connect from "connect-mongo";
 import session from "express-session";
 import { SessionOptions } from "express-session";
@@ -71,30 +71,37 @@ const start = async (): Promise<void> => {
     icon: "Book",
   };
 
+  const welcomeDashboard = {
+    label: 'Welcome',
+    handler: async () => ({
+      // Custom HTML or React component to be displayed on the dashboard
+      component: AdminJS.bundle('./path/to/WelcomeDashboard'),
+    }),
+  };
   const componentLoader = new ComponentLoader();
   const Components = {
     upload: componentLoader.add("FormPage", "./editImage"),
     show: componentLoader.add("Show", "./showImage"),
-    richTextContent : componentLoader.add("RichTextEditorPage", "./RichTextEditorPage"),
-    richShowContent : componentLoader.add("richShowContent", "./RichTextShowEditor"),
+    richTextContent: componentLoader.add("RichTextEditorPage", "./RichTextEditorPage"),
+    richShowContent: componentLoader.add("richShowContent", "./RichTextShowEditor"),
   };
 
 
   const convertKeysToArray = (payload) => {
     const filesArray = [];
     let index = 0;
-  
+
     while (payload[`items.0.file.${index}`]) {
       const fileKey = `items.0.file.${index}`;
       filesArray.push(payload[fileKey]);
       index++;
     }
-  
+
     return filesArray;
   };
   const excludeItemsFromPayload = (payload) => {
     const result = {};
-  
+
     // Iterate through keys in the payload
     for (const key in payload) {
       // Check if the key does not start with 'items.'
@@ -103,7 +110,7 @@ const start = async (): Promise<void> => {
         result[key] = payload[key];
       }
     }
-  
+
     return result;
   };
   const handleFileUploadAction = async (request) => {
@@ -113,7 +120,7 @@ const start = async (): Promise<void> => {
       region: `${process.env.REACT_APP_AWS_REGION}`,
     });
     try {
-      const file = request.payload["items.0.file.0"];                                   
+      const file = request.payload["items.0.file.0"];
       if (file) {
         // Configure AWS SDK with your credentials
         const s3 = new AWS.S3({
@@ -124,35 +131,35 @@ const start = async (): Promise<void> => {
         const arrayOfFiles = convertKeysToArray(request.payload);
         const itemsArray = [];
         arrayOfFiles.forEach(async (file) => {
-        const fileStream = fs.createReadStream(file.path);
-        // Generate a unique key for the file in S3
-        const key = `uploads/${file.name}`;
-        // Prepare the parameters for the S3 upload
-        const params = {
-          Bucket: process.env.REACT_APP_AWS_BUCKET,
-          Key: key,
-          Body: fileStream, // Assuming the file data is available                      
-        };
-        const item = {
-          s3Key: key,
-          bucket: process.env.REACT_APP_AWS_BUCKET,
-          mime: file.type,
-          dateCreated: new Date(),
-          region: process.env.REACT_APP_AWS_REGION,
-        };
-        itemsArray.push(item);
-        // Upload the file to S3                  
-        const res = await s3.putObject(params).promise();
-        console.log(
-          `Successfully uploaded file to ${res}`
-        );
+          const fileStream = fs.createReadStream(file.path);
+          // Generate a unique key for the file in S3
+          const key = `uploads/${file.name}`;
+          // Prepare the parameters for the S3 upload
+          const params = {
+            Bucket: process.env.REACT_APP_AWS_BUCKET,
+            Key: key,
+            Body: fileStream, // Assuming the file data is available                      
+          };
+          const item = {
+            s3Key: key,
+            bucket: process.env.REACT_APP_AWS_BUCKET,
+            mime: file.type,
+            dateCreated: new Date(),
+            region: process.env.REACT_APP_AWS_REGION,
+          };
+          itemsArray.push(item);
+          // Upload the file to S3                  
+          const res = await s3.putObject(params).promise();
+          console.log(
+            `Successfully uploaded file to ${res}`
+          );
 
         });
         const resultPayload = excludeItemsFromPayload(request.payload);
         resultPayload['items'] = itemsArray;
 
         request.payload = resultPayload;
-      } 
+      }
       const richTextContent = request.payload['richTextContent'];
       if (richTextContent) {
         // Handle rich text content upload to AWS S3 here
@@ -165,10 +172,10 @@ const start = async (): Promise<void> => {
           Body: Buffer.from(richTextContent, 'utf-8'),
           ContentType: 'text/plain',
         };
-  
+
         const richTextRes = await s3.putObject(richTextParams).promise();
         console.log(`Successfully uploaded rich text content to ${richTextRes}`);
-  
+
         // Update the payload with the rich text content information
         const url = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.amazonaws.com/${richTextKey}`;
         request.payload['richTextContent'] = url;
@@ -181,10 +188,29 @@ const start = async (): Promise<void> => {
 
     return request;
   }
+  const dashboardHandler = async () => {
+    // Asynchronous code where you, e. g. fetch data from your database
+    
+    return { message: 'Hello World' }
+  }
 
 
   // We will need to create an instance of AdminJS with a basic resource
   const admin = new AdminJS({
+    // dashboard: {
+    //   handler: async () => {
+    //     return {
+    //       component: AdminJS.bundle('./path/to/your/custom-welcome-page'),
+    //     };
+    //   },
+    // },
+    // dashboard : componentLoader.add
+    // dashboard: componentLoader.add('Dashboard', './components/dashboard'),
+    dashboard: {
+      component: AdminJS.bundle('./component/dashboard'),
+      handler: dashboardHandler,
+    },
+  
     resources: [
       {
         resource: AdminInfo,
@@ -226,7 +252,7 @@ const start = async (): Promise<void> => {
           listProperties: [
             "title",
             "user_id",
-            
+
             "tags",
             'richTextContent',
             "time",
@@ -261,7 +287,7 @@ const start = async (): Promise<void> => {
             new: {
               // Triggered before saving to the database
               before: async (request) => {
-               return handleFileUploadAction(request);
+                return handleFileUploadAction(request);
               },
             },
             edit: {
