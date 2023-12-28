@@ -16,8 +16,8 @@ import InteractionModel from "./model/Interaction";
 import AdminInfo from "./model/admin";
 import { ActionRequest, ActionContext } from "adminjs";
 import AWS from "aws-sdk";
-// import { ComponentsType } from "@adminjs/design-system";
-// import Connect from 'connect-pg-simple'
+// import { DefaultQuillToolbarOptions } from '@adminjs/design-system';
+ // Adjust the path based on your project structure
 import Connect from "connect-mongo";
 import session from "express-session";
 import { SessionOptions } from "express-session";
@@ -74,6 +74,7 @@ const start = async (): Promise<void> => {
   const Components = {
     upload: componentLoader.add("FormPage", "./editImage"),
     show: componentLoader.add("Show", "./showImage"),
+    // richTextEditor: componentLoader.add("RichTextEditor", "./RichTextEditorPage"), // Add the new component
   };
 
   const convertKeysToArray = (payload) => {
@@ -103,6 +104,11 @@ const start = async (): Promise<void> => {
     return result;
   };
   const handleFileUploadAction = async (request) => {
+    const s3 = new AWS.S3({
+      accessKeyId: `${process.env.REACT_APP_AWS_ACCESS_KEY_ID}`,
+      secretAccessKey: `${process.env.REACT_APP_AWS_SECRET_ACCESS_KEY}`,
+      region: `${process.env.REACT_APP_AWS_REGION}`,
+    });
     try {
       const file = request.payload["items.0.file.0"];                                   
       if (file) {
@@ -143,8 +149,26 @@ const start = async (): Promise<void> => {
         resultPayload['items'] = itemsArray;
 
         request.payload = resultPayload;
-      } else {
-        console.log("No file found");
+      } 
+      const richTextContent = request.payload['richTextContent'];
+      if (richTextContent) {
+        // Handle rich text content upload to AWS S3 here
+  
+        // For example:
+        const richTextKey = `richtext/${Date.now()}_rich_text.txt`;
+        const richTextParams = {
+          Bucket: process.env.REACT_APP_AWS_BUCKET,
+          Key: richTextKey,
+          Body: Buffer.from(richTextContent, 'utf-8'),
+          ContentType: 'text/plain',
+        };
+  
+        const richTextRes = await s3.putObject(richTextParams).promise();
+        console.log(`Successfully uploaded rich text content to ${richTextRes}`);
+  
+        // Update the payload with the rich text content information
+        request.payload['richTextContent'] = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.amazonaws.com/${richTextKey}`;
+
       }
     } catch (error) {
       console.error("Error uploading file to S3:", error);
@@ -153,6 +177,7 @@ const start = async (): Promise<void> => {
 
     return request;
   }
+
 
   // We will need to create an instance of AdminJS with a basic resource
   const admin = new AdminJS({
@@ -199,6 +224,7 @@ const start = async (): Promise<void> => {
             "user_id",
             "content",
             "tags",
+            'richTextContent',
             "time",
             "read_time",
             "like",
@@ -210,6 +236,9 @@ const start = async (): Promise<void> => {
                 edit: Components.upload,
                 show: Components.show,
               },
+            },
+            richTextContent: {
+              type: 'richtext',
             },
           },
           actions: {
