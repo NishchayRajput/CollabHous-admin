@@ -85,6 +85,7 @@ const start = async (): Promise<void> => {
     show: componentLoader.add("Show", "./showImage"),
     richTextContent: componentLoader.add("RichTextEditorPage", "./RichTextEditorPage"),
     richShowContent: componentLoader.add("richShowContent", "./RichTextShowEditor"),
+    dashboardHandler: componentLoader.add("CustomDashboard", "./component/dashboard"),
   };
 
 
@@ -183,6 +184,42 @@ const start = async (): Promise<void> => {
         request.payload['richTextContent'] = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.amazonaws.com/${richTextKey}`;
 
       }
+      // const richTextContent = request.payload['richTextContent'];
+      // if (richTextContent) {
+      //   // For editing, use the existing key from the payload
+      //   // const existingS3Key = request.payload['items'][0]?.s3Key;
+      //   console.log(request.payload);
+      //   const existingS3Key = request.payload['items'] && request.payload['items'][0]?.s3Key;
+
+      //   // If there's an existing key, update the content on S3
+      //   if (existingS3Key) {
+      //     const richTextParams = {
+      //       Bucket: process.env.REACT_APP_AWS_BUCKET,
+      //       Key: existingS3Key, // Use the existing key
+      //       Body: Buffer.from(richTextContent, 'utf-8'),
+      //       ContentType: 'text/plain',
+      //     };
+  
+      //     const richTextRes = await s3.putObject(richTextParams).promise();
+      //     console.log(`Successfully updated rich text content at ${richTextRes}`);
+      //   } else {
+      //     // If there's no existing key, create a new one
+      //     const uniqueId = uuid();
+      //     const richTextKey = `richtext/${uniqueId}_rich_text.txt`;
+      //     const richTextParams = {
+      //       Bucket: process.env.REACT_APP_AWS_BUCKET,
+      //       Key: richTextKey,
+      //       Body: Buffer.from(richTextContent, 'utf-8'),
+      //       ContentType: 'text/plain',
+      //     };
+  
+      //     const richTextRes = await s3.putObject(richTextParams).promise();
+      //     console.log(`Successfully uploaded rich text content to ${richTextRes}`);
+  
+      //     // Update the payload with the new rich text content information
+      //     request.payload['richTextContent'] = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.amazonaws.com/${richTextKey}`;
+      //   }
+      // }
     } catch (error) {
       console.error("Error uploading file to S3:", error);
       // Handle error accordingly
@@ -209,7 +246,7 @@ const start = async (): Promise<void> => {
     // dashboard : componentLoader.add
     // dashboard: componentLoader.add('Dashboard', './components/dashboard'),
     dashboard: {
-      component: AdminJS.bundle('./component/dashboard'),
+      component: Components.dashboardHandler,
       handler: dashboardHandler,
     },
   
